@@ -11,7 +11,8 @@
       --berry: #e5446d;
       --mint: #a8e6cf;
       --sun: #ffd166;
-      --sky: #b5c7ff;
+      --code-bg: #1e1e24;
+      --bar-bg: #2a2a32;
     }
     * { box-sizing: border-box; }
     body {
@@ -39,7 +40,7 @@
       cursor: pointer;
     }
     .lang button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
-    .lang button:focus-visible, a:focus-visible { outline: 3px solid var(--berry); outline-offset: 3px; }
+    button:focus-visible, a:focus-visible { outline: 3px solid var(--berry); outline-offset: 3px; }
     header img {
       width: 160px;
       height: 160px;
@@ -49,24 +50,94 @@
       box-shadow: 8px 8px 0 var(--berry);
       background: var(--mint);
     }
-    h1, h2, h3 { font-family: Georgia, serif; }
+    h1, h2 { font-family: Georgia, serif; }
     h1 { font-size: 2.6rem; margin: 24px 0 8px; }
     header p { max-width: 34rem; margin: 0 auto; font-size: 1.1rem; }
     main { max-width: 860px; margin: 0 auto; padding: 8px 20px; }
     section { margin: 44px 0; }
     h2 { font-size: 1.8rem; border-bottom: 4px solid var(--berry); display: inline-block; margin: 0 0 16px; }
-    .skills { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; }
-    .skills li { background: var(--ink); color: var(--paper); padding: 6px 16px; border-radius: 999px; }
-    .projects { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
-    .project { padding: 20px; border: 3px solid var(--ink); border-radius: 14px; box-shadow: 5px 5px 0 var(--ink); }
-    .project h3 { margin: 0 0 8px; }
-    .project p { margin: 0; }
-    .project:nth-child(1) { background: var(--mint); }
-    .project:nth-child(2) { background: var(--sky); }
-    .project:nth-child(3) { background: var(--sun); }
-    .project:nth-child(4) { background: var(--mint); }
     a { color: var(--berry); font-weight: bold; }
     footer { text-align: center; padding: 28px 20px; border-top: 4px solid var(--ink); }
+
+    /* Window (macOS style) */
+    .editor {
+      background: var(--code-bg);
+      border: 1px solid rgba(0, 0, 0, 0.25);
+      border-radius: 12px;
+      box-shadow: 0 16px 40px rgba(35, 25, 66, 0.2);
+      overflow: hidden;
+      font-family: Consolas, "Courier New", monospace;
+    }
+    .titlebar { display: flex; align-items: center; gap: 14px; background: var(--bar-bg); padding: 10px 14px; }
+    .dots { display: flex; gap: 8px; flex-shrink: 0; }
+    .dots span { width: 12px; height: 12px; border-radius: 50%; }
+    .dots span:nth-child(1) { background: #ff5f57; }
+    .dots span:nth-child(2) { background: #febc2e; }
+    .dots span:nth-child(3) { background: #28c840; }
+    .tabs { display: flex; gap: 2px; overflow-x: auto; }
+    .tab {
+      font: 0.85rem -apple-system, BlinkMacSystemFont, "Segoe UI", Verdana, sans-serif;
+      color: #9a9aa8;
+      background: none;
+      border: none;
+      border-radius: 6px;
+      padding: 5px 12px;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    .tab:hover { color: var(--paper); }
+    .tab[aria-selected="true"] { background: rgba(255, 255, 255, 0.12); color: var(--paper); }
+    .panel { padding: 20px; min-height: 27.5rem; color: var(--paper); counter-reset: n; }
+    .l { position: relative; padding-left: 3rem; min-height: 1.9em; white-space: pre-wrap; line-height: 1.9; }
+    .l::before {
+      counter-increment: n;
+      content: counter(n);
+      position: absolute;
+      left: 0;
+      width: 1.8rem;
+      text-align: right;
+      color: #6e6e7c;
+    }
+    .k { color: #ff8fb0; }
+    .s { color: var(--mint); }
+    .c { color: #8e8ea0; }
+    .hint { margin: 0 0 14px; }
+
+        /* Layouts, text boxes and media placeholders */
+    [hidden] { display: none !important; }
+    .grid { display: grid; gap: 14px; }
+    .c2 { grid-template-columns: repeat(2, 1fr); }
+    .c3 { grid-template-columns: repeat(3, 1fr); }
+    .grid + .grid, .grid + .box { margin-top: 14px; }
+    .box {
+      display: grid;
+      align-content: center;
+      margin: 0;
+      padding: 16px 18px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 10px;
+      font: 0.95rem/1.7 Verdana, Arial, sans-serif;
+    }
+    .box p { margin: 0 0 8px; }
+    .box p:last-child { margin: 0; }
+    .box a { color: var(--sun); }
+    .media {
+      position: relative;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .media span { color: #8e8ea0; padding: 8px; text-align: center; font-size: 0.85rem; }
+    .media img, .media video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .wide { aspect-ratio: 16 / 9; }
+    .four { aspect-ratio: 4 / 3; }
+    @media (max-width: 640px) {
+      .c2:not(.keep), .c3 { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
@@ -76,9 +147,8 @@
       <button onclick="setLanguage('en')" data-lang="en">EN</button>
       <button onclick="setLanguage('cs')" data-lang="cs">CS</button>
     </nav>
-    <img src="photo.jpg" alt="Photo of Mat">
-    <h1 data-i18n="hello">mtchkka. Hi</h1>
-    <p data-i18n="tagline">Second-year IT student in Prague. I make things with 3D, code and design.</p>
+    <h1 data-i18n="hello">Hi, I’m Mat</h1>
+    <p data-i18n="tagline">First-year IT student in Prague. I make things with 3D, code and design.</p>
   </header>
 
   <main>
@@ -88,42 +158,95 @@
     </section>
 
     <section>
-      <h2 data-i18n="skills_h">Skills</h2>
-      <ul class="skills">
-        <li>C++</li>
-        <li data-i18n="python">Python (basics)</li>
-        <li>Blender</li>
-        <li>Canva</li>
-        <li>Affinity Designer</li>
-        <li>3D printing</li>
-      </ul>
-    </section>
+      <h2 data-i18n="files_h">My skills</h2>
+      <p class="hint" data-i18n="hint">Click a file to open it.</p>
 
-    <section>
-      <h2 data-i18n="projects_h">Projects</h2>
-      <div class="projects">
-        <article class="project">
-          <h3 data-i18n="p1_h">Gummy bear character</h3>
-          <p data-i18n="p1_t">An original character I model, texture and animate in Blender.</p>
-        </article>
-        <article class="project">
-          <h3 data-i18n="p2_h">Walking robot</h3>
-          <p data-i18n="p2_t">A walking robot inspired by game animatronics. In progress: I’m starting with Raspberry Pi and robotics basics.</p>
-        </article>
-        <article class="project">
-          <h3 data-i18n="p3_h">Rack configurator</h3>
-          <p data-i18n="p3_t">Planned: a browser tool built with Three.js for choosing colors and parts of a 3D-printed rack.</p>
-        </article>
-        <article class="project">
-          <h3 data-i18n="p4_h">Pi companion</h3>
-          <p data-i18n="p4_t">A small friendly character on a Raspberry Pi 5 that talks using a local language model.</p>
-        </article>
+      <div class="editor">
+        <div class="titlebar">
+          <div class="dots"><span></span><span></span><span></span></div>
+          <div class="tabs" role="tablist">
+            <button class="tab" role="tab" aria-selected="true" aria-controls="stl" data-tab="stl" onclick="showTab('stl')">3dprint.stl</button>
+            <button class="tab" role="tab" aria-selected="false" aria-controls="cpp" data-tab="cpp" onclick="showTab('cpp')">skills.cpp</button>
+            <button class="tab" role="tab" aria-selected="false" aria-controls="pdf" data-tab="pdf" onclick="showTab('pdf')">hardware.pdf</button>
+            <button class="tab" role="tab" aria-selected="false" aria-controls="blend" data-tab="blend" onclick="showTab('blend')">skills.blend</button>
+            <button class="tab" role="tab" aria-selected="false" aria-controls="af" data-tab="af" onclick="showTab('af')">drawings.af</button>
+            <button class="tab" role="tab" aria-selected="false" aria-controls="ppt" data-tab="ppt" onclick="showTab('ppt')">other.pptx</button>
+          </div>
+        </div>
+
+        <div class="panel" id="stl" role="tabpanel">
+          <div class="grid c2">
+            <div class="box">
+              <p data-i18n="stl_t"></p>
+              <p><a href="models/bonbon.stl" download data-i18n="stl_dl"></a></p>
+            </div>
+            <figure class="media four"><span>images/bonbon.jpg</span><img src="images/bonbon.jpg" alt="My 3D-printed bonbon" loading="lazy" onerror="this.remove()"></figure>
+          </div>
+        </div>
+
+        <div class="panel" id="cpp" role="tabpanel" hidden>
+          <div class="l"><span class="k">#include</span> &lt;vector&gt;</div>
+          <div class="l"><span class="k">#include</span> &lt;string&gt;</div>
+          <div class="l"></div>
+          <div class="l"><span class="k">struct</span> Skill { std::string name; std::string level; };</div>
+          <div class="l"></div>
+          <div class="l c">// <span data-i18n="cpp_c"></span></div>
+          <div class="l">std::vector&lt;Skill&gt; everything_i_know = {</div>
+          <div class="l">    {<span class="s">"C++"</span>, <span class="s">"<span data-i18n="learning"></span>"</span>},</div>
+          <div class="l">    {<span class="s">"Python"</span>, <span class="s">"<span data-i18n="basics"></span>"</span>},</div>
+          <div class="l">    {<span class="s">"Kivy"</span>, <span class="s">"<span data-i18n="learning"></span>"</span>},</div>
+          <div class="l">    {<span class="s">"HTML + CSS"</span>, <span class="s">"<span data-i18n="learning"></span>"</span>},</div>
+          <div class="l">    {<span class="s">"iOS"</span>, <span class="s">"<span data-i18n="learning"></span>"</span>}</div>
+          <div class="l">};</div>
+        </div>
+
+        <div class="panel" id="pdf" role="tabpanel" hidden>
+          <div class="grid c3">
+            <figure class="media four"><span>images/setup.jpg</span><img src="images/setup.jpg" alt="My desk and computer setup" loading="lazy" onerror="this.remove()"></figure>
+            <figure class="media four"><span>images/pc-build.jpg</span><img src="images/pc-build.jpg" alt="A PC I built" loading="lazy" onerror="this.remove()"></figure>
+            <figure class="media four"><span>videos/hardware.mp4</span><video src="videos/hardware.mp4" controls preload="metadata" onerror="this.remove()"></video></figure>
+          </div>
+          <p class="box" data-i18n="hw_t"></p>
+        </div>
+
+        <div class="panel" id="blend" role="tabpanel" hidden>
+          <div class="grid c2">
+            <figure class="media four"><span>images/gummy-bear.jpg</span><img src="images/gummy-bear.jpg" alt="My gummy bear character" loading="lazy" onerror="this.remove()"></figure>
+            <figure class="media four"><span>videos/gummy-bear.mp4</span><video src="videos/gummy-bear.mp4" controls preload="metadata" onerror="this.remove()"></video></figure>
+          </div>
+          <p class="box" data-i18n="blend_t"></p>
+        </div>
+
+        <div class="panel" id="af" role="tabpanel" hidden>
+          <div class="grid c2 keep">
+            <figure class="media wide"><span>images/drawing-1.png</span><img src="images/drawing-1.png" alt="Drawing 1" loading="lazy" onerror="this.remove()"></figure>
+            <figure class="media wide"><span>images/drawing-2.png</span><img src="images/drawing-2.png" alt="Drawing 2" loading="lazy" onerror="this.remove()"></figure>
+            <figure class="media wide"><span>images/drawing-3.png</span><img src="images/drawing-3.png" alt="Drawing 3" loading="lazy" onerror="this.remove()"></figure>
+            <figure class="media wide"><span>images/drawing-4.png</span><img src="images/drawing-4.png" alt="Drawing 4" loading="lazy" onerror="this.remove()"></figure>
+          </div>
+          <p class="box" data-i18n="af_t"></p>
+        </div>
+
+        <div class="panel" id="ppt" role="tabpanel" hidden>
+          <div class="grid c2">
+            <figure class="media wide"><span>images/slide-1.png</span><img src="images/slide-1.png" alt="A slide from my presentations" loading="lazy" onerror="this.remove()"></figure>
+            <p class="box" data-i18n="ppt_1"></p>
+          </div>
+          <div class="grid c2">
+            <p class="box" data-i18n="ppt_2"></p>
+            <figure class="media wide"><span>images/slide-2.png</span><img src="images/slide-2.png" alt="A slide from my presentations" loading="lazy" onerror="this.remove()"></figure>
+          </div>
+          <div class="grid c2">
+            <figure class="media wide"><span>images/slide-3.png</span><img src="images/slide-3.png" alt="A slide from my presentations" loading="lazy" onerror="this.remove()"></figure>
+            <p class="box" data-i18n="ppt_3"></p>
+          </div>
+        </div>
       </div>
     </section>
 
     <section>
       <h2 data-i18n="contact_h">Contact</h2>
-      <p><span data-i18n="contact_p">Write to me at</span> <a href="mailto:your@email.com">your@email.com</a></p>
+      <p><span data-i18n="contact_p">Write to me at</span> <a href="mailto:mtchkka@icloud.com">mtchkka@icloud.com</a></p>
     </section>
   </main>
 
@@ -137,18 +260,20 @@
         hello: "mtchkka. Hi",
         tagline: "Second-year IT student in Prague. I make things with 3D, code and design.",
         about_h: "About me",
-        about_p: "I study at an IT-focused secondary school, where I learn graphic design, Blender, C++ and iOS development. I speak Czech, Russian and English. In my free time I build small projects and learn something new from each one.",
-        skills_h: "Skills",
-        python: "Python (basics)",
-        projects_h: "Projects",
-        p1_h: "Gummy bear character",
-        p1_t: "An original character I model, texture and animate in Blender.",
-        p2_h: "Walking robot",
-        p2_t: "A walking robot inspired by game animatronics. In progress: I’m starting with Raspberry Pi and robotics basics.",
-        p3_h: "Rack configurator",
-        p3_t: "Planned: a browser tool built with Three.js for choosing colors and parts of a 3D-printed rack.",
-        p4_h: "Pi companion",
-        p4_t: "A small friendly character on a Raspberry Pi 5 that talks using a local language model.",
+        about_p: "I study at an IT-focused secondary school, where I learn graphic design, coding, robotics and much more. I speak Czech, Russian and English. In my free time I build small projects and learn something new from each one.",
+        files_h: "My skills",
+        hint: "Click a file to open it.",
+        basics: "basics",
+        learning: "learning",
+        stl_t: "The star of my 3D printing is the bonbon. Here I’ll show how I made it, what I learned and what I want to print next.",
+        stl_dl: "Download the STL file",
+        cpp_c: "Everything I know about coding, so far.",
+        hw_t: "Everything about my setups: cable management, my homelab plans, PC building and my Raspberry Pi projects, like the Pi companion and a walking robot (in progress).",
+        blend_t: "My gummy bear character, which I model, texture and animate in Blender. Here I’ll show the process and the final result.",
+        af_t: "Pictures I drew.",
+        ppt_1: "I like presentations that are simple and clear: one idea per slide and not too much text.",
+        ppt_2: "I make slides in PowerPoint and Canva, and I like adding a bit of humor, like my code-style slide in 9th grade.",
+        ppt_3: "More examples of my presentations will appear here.",
         contact_h: "Contact",
         contact_p: "Write to me at"
       },
@@ -156,22 +281,33 @@
         hello: "mtchkka. Ahoj",
         tagline: "Studuji druhý ročník IT školy v Praze. Tvořím věci ve 3D, v kódu a v designu.",
         about_h: "O mně",
-        about_p: "Studuji střední školu zaměřenou na IT, kde se učím grafický design, Blender, C++ a vývoj pro iOS. Mluvím česky, rusky a anglicky. Ve volném čase dělám malé projekty a z každého se naučím něco nového.",
-        skills_h: "Dovednosti",
-        python: "Python (základy)",
-        projects_h: "Projekty",
-        p1_h: "Postavička gumového medvídka",
-        p1_t: "Originální postava, kterou modeluji, texturuji a animuji v Blenderu.",
-        p2_h: "Kráčející robot",
-        p2_t: "Robot inspirovaný animatroniky z her. Rozpracováno: začínám se základy Raspberry Pi a robotiky.",
-        p3_h: "Konfigurátor racku",
-        p3_t: "Plánováno: prohlížečový nástroj v Three.js pro výběr barev a dílů 3D tištěného racku.",
-        p4_h: "Parťák na Pi",
-        p4_t: "Malá přátelská postavička na Raspberry Pi 5, která mluví pomocí lokálního jazykového modelu.",
+        about_p: "Studuji střední školu zaměřenou na IT, kde se učím grafický design, kódování, robotiku a nejen. Mluvím česky, rusky a anglicky. Ve volném čase dělám malé projekty a z každého se naučím něco nového.",
+        files_h: "Moje dovednosti",
+        hint: "Klikni na soubor, který chceš otevřít.",
+        basics: "základy",
+        learning: "učím se",
+        stl_t: "Hvězdou mého 3D tisku je bonbón. Tady ukážu, jak jsem ho vytvořil, co jsem se naučil a co chci vytisknout příště.",
+        stl_dl: "Stáhnout soubor STL",
+        cpp_c: "Všechno, co zatím umím v programování.",
+        hw_t: "Všechno o mých setupech: správa kabelů, plány na homelab, stavba PC a moje projekty s Raspberry Pi, třeba parťák na Pi a kráčející robot (rozpracováno).",
+        blend_t: "Moje postavička gumového medvídka, kterou modeluji, texturuji a animuji v Blenderu. Tady ukážu postup i výsledek.",
+        af_t: "Obrázky, které jsem nakreslil.",
+        ppt_1: "Mám rád jednoduché a přehledné prezentace: jedna myšlenka na slide a ne příliš mnoho textu.",
+        ppt_2: "Slidy dělám v PowerPointu a Canvě a rád přidám trochu humoru, třeba můj slide ve stylu kódu z deváté třídy.",
+        ppt_3: "Další ukázky mých prezentací tu budou.",
         contact_h: "Kontakt",
         contact_p: "Napište mi na"
       }
     };
+
+    function showTab(name) {
+      document.querySelectorAll(".tab").forEach(function (tab) {
+        tab.setAttribute("aria-selected", tab.dataset.tab === name);
+      });
+      document.querySelectorAll(".panel").forEach(function (panel) {
+        panel.hidden = panel.id !== name;
+      });
+    }
 
     function setLanguage(lang) {
       document.documentElement.lang = lang;
