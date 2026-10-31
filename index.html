@@ -3,10 +3,191 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>mtchkka's Portfolio</title>
+  <title>Mat’s Portfolio</title>
+  <style>
+    :root {
+      --paper: #f7f2ff;
+      --ink: #231942;
+      --berry: #e5446d;
+      --mint: #a8e6cf;
+      --sun: #ffd166;
+      --sky: #b5c7ff;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: Verdana, Arial, sans-serif;
+      line-height: 1.7;
+    }
+    header {
+      position: relative;
+      background: var(--sun);
+      text-align: center;
+      padding: 64px 20px 44px;
+      border-bottom: 4px solid var(--ink);
+    }
+    .lang { position: absolute; top: 16px; right: 16px; display: flex; gap: 6px; }
+    .lang button {
+      font: bold 0.9rem Verdana, Arial, sans-serif;
+      color: var(--ink);
+      background: var(--paper);
+      border: 2px solid var(--ink);
+      border-radius: 8px;
+      padding: 4px 10px;
+      cursor: pointer;
+    }
+    .lang button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+    .lang button:focus-visible, a:focus-visible { outline: 3px solid var(--berry); outline-offset: 3px; }
+    header img {
+      width: 160px;
+      height: 160px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 4px solid var(--ink);
+      box-shadow: 8px 8px 0 var(--berry);
+      background: var(--mint);
+    }
+    h1, h2, h3 { font-family: Georgia, serif; }
+    h1 { font-size: 2.6rem; margin: 24px 0 8px; }
+    header p { max-width: 34rem; margin: 0 auto; font-size: 1.1rem; }
+    main { max-width: 860px; margin: 0 auto; padding: 8px 20px; }
+    section { margin: 44px 0; }
+    h2 { font-size: 1.8rem; border-bottom: 4px solid var(--berry); display: inline-block; margin: 0 0 16px; }
+    .skills { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; }
+    .skills li { background: var(--ink); color: var(--paper); padding: 6px 16px; border-radius: 999px; }
+    .projects { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+    .project { padding: 20px; border: 3px solid var(--ink); border-radius: 14px; box-shadow: 5px 5px 0 var(--ink); }
+    .project h3 { margin: 0 0 8px; }
+    .project p { margin: 0; }
+    .project:nth-child(1) { background: var(--mint); }
+    .project:nth-child(2) { background: var(--sky); }
+    .project:nth-child(3) { background: var(--sun); }
+    .project:nth-child(4) { background: var(--mint); }
+    a { color: var(--berry); font-weight: bold; }
+    footer { text-align: center; padding: 28px 20px; border-top: 4px solid var(--ink); }
+  </style>
 </head>
 <body>
-  <h1>Hi, I'm mtchkka</h1>
-  <p>I do 3D, C++ and design.</p>
+
+  <header>
+    <nav class="lang" aria-label="Language">
+      <button onclick="setLanguage('en')" data-lang="en">EN</button>
+      <button onclick="setLanguage('cs')" data-lang="cs">CS</button>
+    </nav>
+    <img src="photo.jpg" alt="Photo of Mat">
+    <h1 data-i18n="hello">mtchkka. Hi</h1>
+    <p data-i18n="tagline">Second-year IT student in Prague. I make things with 3D, code and design.</p>
+  </header>
+
+  <main>
+    <section>
+      <h2 data-i18n="about_h">About me</h2>
+      <p data-i18n="about_p">I study at an IT-focused secondary school, where I learn graphic design, Blender, C++ and iOS development. I speak Czech, Russian and English. In my free time I build small projects and learn something new from each one.</p>
+    </section>
+
+    <section>
+      <h2 data-i18n="skills_h">Skills</h2>
+      <ul class="skills">
+        <li>C++</li>
+        <li data-i18n="python">Python (basics)</li>
+        <li>Blender</li>
+        <li>Canva</li>
+        <li>Affinity Designer</li>
+        <li>3D printing</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2 data-i18n="projects_h">Projects</h2>
+      <div class="projects">
+        <article class="project">
+          <h3 data-i18n="p1_h">Gummy bear character</h3>
+          <p data-i18n="p1_t">An original character I model, texture and animate in Blender.</p>
+        </article>
+        <article class="project">
+          <h3 data-i18n="p2_h">Walking robot</h3>
+          <p data-i18n="p2_t">A walking robot inspired by game animatronics. In progress: I’m starting with Raspberry Pi and robotics basics.</p>
+        </article>
+        <article class="project">
+          <h3 data-i18n="p3_h">Rack configurator</h3>
+          <p data-i18n="p3_t">Planned: a browser tool built with Three.js for choosing colors and parts of a 3D-printed rack.</p>
+        </article>
+        <article class="project">
+          <h3 data-i18n="p4_h">Pi companion</h3>
+          <p data-i18n="p4_t">A small friendly character on a Raspberry Pi 5 that talks using a local language model.</p>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <h2 data-i18n="contact_h">Contact</h2>
+      <p><span data-i18n="contact_p">Write to me at</span> <a href="mailto:your@email.com">your@email.com</a></p>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2026 Mat</p>
+  </footer>
+
+  <script>
+    const text = {
+      en: {
+        hello: "mtchkka. Hi",
+        tagline: "Second-year IT student in Prague. I make things with 3D, code and design.",
+        about_h: "About me",
+        about_p: "I study at an IT-focused secondary school, where I learn graphic design, Blender, C++ and iOS development. I speak Czech, Russian and English. In my free time I build small projects and learn something new from each one.",
+        skills_h: "Skills",
+        python: "Python (basics)",
+        projects_h: "Projects",
+        p1_h: "Gummy bear character",
+        p1_t: "An original character I model, texture and animate in Blender.",
+        p2_h: "Walking robot",
+        p2_t: "A walking robot inspired by game animatronics. In progress: I’m starting with Raspberry Pi and robotics basics.",
+        p3_h: "Rack configurator",
+        p3_t: "Planned: a browser tool built with Three.js for choosing colors and parts of a 3D-printed rack.",
+        p4_h: "Pi companion",
+        p4_t: "A small friendly character on a Raspberry Pi 5 that talks using a local language model.",
+        contact_h: "Contact",
+        contact_p: "Write to me at"
+      },
+      cs: {
+        hello: "mtchkka. Ahoj",
+        tagline: "Studuji druhý ročník IT školy v Praze. Tvořím věci ve 3D, v kódu a v designu.",
+        about_h: "O mně",
+        about_p: "Studuji střední školu zaměřenou na IT, kde se učím grafický design, Blender, C++ a vývoj pro iOS. Mluvím česky, rusky a anglicky. Ve volném čase dělám malé projekty a z každého se naučím něco nového.",
+        skills_h: "Dovednosti",
+        python: "Python (základy)",
+        projects_h: "Projekty",
+        p1_h: "Postavička gumového medvídka",
+        p1_t: "Originální postava, kterou modeluji, texturuji a animuji v Blenderu.",
+        p2_h: "Kráčející robot",
+        p2_t: "Robot inspirovaný animatroniky z her. Rozpracováno: začínám se základy Raspberry Pi a robotiky.",
+        p3_h: "Konfigurátor racku",
+        p3_t: "Plánováno: prohlížečový nástroj v Three.js pro výběr barev a dílů 3D tištěného racku.",
+        p4_h: "Parťák na Pi",
+        p4_t: "Malá přátelská postavička na Raspberry Pi 5, která mluví pomocí lokálního jazykového modelu.",
+        contact_h: "Kontakt",
+        contact_p: "Napište mi na"
+      }
+    };
+
+    function setLanguage(lang) {
+      document.documentElement.lang = lang;
+      document.querySelectorAll("[data-i18n]").forEach(function (el) {
+        el.textContent = text[lang][el.dataset.i18n];
+      });
+      document.querySelectorAll(".lang button").forEach(function (btn) {
+        btn.setAttribute("aria-pressed", btn.dataset.lang === lang);
+      });
+      try { localStorage.setItem("lang", lang); } catch (e) {}
+    }
+
+    var saved = "en";
+    try { saved = localStorage.getItem("lang") || "en"; } catch (e) {}
+    setLanguage(text[saved] ? saved : "en");
+  </script>
+
 </body>
 </html>
