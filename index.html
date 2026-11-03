@@ -52,12 +52,14 @@
     .tab:hover, .tab.active { color: var(--paper); }
     .tab.active { background: rgba(255, 255, 255, 0.12); }
 
-    /* Only the active tab's panel is shown. All panels have the same minimum height. */
-    .panel { position: relative; display: none; flex-direction: column; gap: 14px; min-height: 27.5rem; padding: 20px; color: var(--paper); }
-    .panel.active { display: flex; }
-    .grow { flex: 1; }   /* this element takes all the free space in the panel */
+    /* All panels sit on top of each other in one grid cell, so the window is as tall as the biggest tab.
+       Only the active panel is visible. */
+    .panels { display: grid; }
+    .panel { grid-area: 1 / 1; display: flex; flex-direction: column; gap: 14px; padding: 20px; color: var(--paper); visibility: hidden; }
+    .panel.active { visibility: visible; }
+    .panel:has(.square) { justify-content: center; }   /* square tabs sit in the middle of the tall window */
 
-    /* ---------- Boxes, pictures, videos ---------- */
+    /* ---------- Boxes, pictures, 3D model ---------- */
     .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
     .box { display: grid; align-content: center; gap: 8px; margin: 0; padding: 16px 18px; background: rgba(255, 255, 255, 0.06); border-radius: 10px; font: 0.95rem/1.7 Verdana, Arial, sans-serif; }
     .box p { margin: 0; }
@@ -65,11 +67,13 @@
 
     .media { position: relative; display: flex; align-items: center; justify-content: center; margin: 0; background: rgba(255, 255, 255, 0.05); border-radius: 10px; overflow: hidden; }
     .media::before { content: attr(data-src); padding: 8px; color: var(--muted); font-size: 0.85rem; text-align: center; }  /* file name shown until the file exists */
-    .media img, .media video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-    .media:has(img), .media:has(video) { cursor: zoom-in; }
-    .media:has(video)::after { content: "▶"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; background: rgba(0, 0, 0, 0.55); color: #fff; pointer-events: none; }
+    .media img, .media model-viewer { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .media:has(img) { cursor: zoom-in; }
     .wide { aspect-ratio: 16 / 9; }
-    .grow .media { min-height: 180px; }
+
+    /* Two squares side by side: text on the left, picture or 3D model on the right */
+    .square { aspect-ratio: 1; }
+
 
     /* ---------- Code tab ---------- */
     .code { counter-reset: line; }
@@ -82,18 +86,9 @@
     /* ---------- Full-screen viewer ---------- */
     dialog { width: 100%; height: 100%; max-width: none; max-height: none; padding: 16px; border: none; background: rgba(0, 0, 0, 0.92); cursor: zoom-out; }
     dialog[open] { display: flex; align-items: center; justify-content: center; }
-    dialog img, dialog video { max-width: 100%; max-height: 100%; border-radius: 8px; }
+    dialog img { max-width: 100%; max-height: 100%; border-radius: 8px; }
     dialog button { position: absolute; top: 12px; right: 18px; font-size: 2rem; line-height: 1; color: #fff; background: none; border: none; cursor: pointer; }
     dialog button:focus-visible { outline-color: #fff; }
-
-    /* Easter egg: little green button in the corner of the skills.blend tab */
-    .panel:has(.egg) { padding-bottom: 60px; }   /* leaves room for the button under the text box */
-    .egg { position: absolute; left: 20px; bottom: 14px; width: 34px; height: 34px; padding: 0; border: none; border-radius: 50%; background: #28c840; color: #0b3d16; font: bold 0.8rem Verdana, Arial, sans-serif; cursor: pointer; animation: pulse 2s infinite; }
-    .egg:hover { transform: scale(1.1); }
-    @keyframes pulse { from { box-shadow: 0 0 0 0 rgba(40, 200, 64, 0.6); } to { box-shadow: 0 0 0 12px rgba(40, 200, 64, 0); } }
-    @media (prefers-reduced-motion: reduce) { .egg { animation: none; } }
-    dialog model-viewer { position: absolute; inset: 0; width: 100%; height: 100%; }
-    dialog[data-error]::before { content: attr(data-error); color: var(--muted); font-family: Consolas, "Courier New", monospace; }   /* shown if the model file is missing */
 
     @media (max-width: 640px) {
       .grid { grid-template-columns: 1fr; }
@@ -127,80 +122,53 @@
           <div class="tabs">
             <button class="tab active" data-tab="stl" onclick="showTab('stl')">3dprint.stl</button>
             <button class="tab" data-tab="pdf" onclick="showTab('pdf')">hardware.pdf</button>
-            <button class="tab" data-tab="cpp" onclick="showTab('cpp')">skills.cpp</button>
+            <button class="tab" data-tab="cpp" onclick="showTab('cpp')">coding.cpp</button>
             <button class="tab" data-tab="blend" onclick="showTab('blend')">skills.blend</button>
             <button class="tab" data-tab="af" onclick="showTab('af')">drawings.af</button>
-            <button class="tab" data-tab="ppt" onclick="showTab('ppt')">other.pptx</button>
           </div>
         </div>
 
-        <!-- Pictures and videos: just put the file path in data-src (.mp4 = video) -->
+        <!-- Pictures and 3D models: put the file path in data-src (.glb = 3D model) -->
 
-        <div class="panel active" data-tab="stl">
-          <div class="grid grow">
-            <div class="box">
-              <p data-i18n="stl_t"></p>
-              <a href="models/bonbon.stl" download data-i18n="stl_dl"></a>
+        <div class="panels">
+          <div class="panel active" data-tab="stl">
+            <div class="grid">
+              <p class="box square" data-i18n="stl_t"></p>
+              <figure class="media square" data-src="images/bonbon.jpg" data-alt="My 3D-printed BonBon"></figure>
             </div>
-            <figure class="media" data-src="images/bonbon.jpg" data-alt="My 3D-printed bonbon"></figure>
           </div>
-        </div>
 
-        <div class="panel" data-tab="pdf">
-          <div class="grid grow">
-            <figure class="media" data-src="images/setup.jpg" data-alt="My setup"></figure>
-            <figure class="media" data-src="images/homelab.jpg" data-alt="My homelab"></figure>
+          <div class="panel" data-tab="pdf">
+            <div class="grid">
+              <p class="box square" data-i18n="hw_t"></p>
+              <figure class="media square" data-src="images/homelab.jpg" data-alt="My homelab"></figure>
+            </div>
           </div>
-          <p class="box" data-i18n="hw_t"></p>
-        </div>
 
-        <div class="panel" data-tab="cpp">
-          <div class="code">
-            <div class="l"><span class="k">#include</span> &lt;vector&gt;</div>
-            <div class="l"><span class="k">#include</span> &lt;string&gt;</div>
-            <div class="l"></div>
-            <div class="l"><span class="k">struct</span> Skill { std::string name; std::string level; };</div>
-            <div class="l"></div>
-            <div class="l c">// <span data-i18n="cpp_c"></span></div>
-            <div class="l">std::vector&lt;Skill&gt; everything_i_know = {</div>
-            <div class="l">    {<span class="s">"C++"</span>, <span class="s">"<span data-i18n="learning"></span>"</span>},</div>
-            <div class="l">    {<span class="s">"Python"</span>, <span class="s">"<span data-i18n="basics"></span>"</span>},</div>
-            <div class="l">    {<span class="s">"C#"</span>, <span class="s">"<span data-i18n="learning"></span>"</span>},</div>
-            <div class="l">    {<span class="s">"HTML + CSS"</span>, <span class="s">"<span data-i18n="learning"></span>"</span>},</div>
-            <div class="l">    {<span class="s">"AI"</span>, <span class="s">"<span data-i18n="learning"></span>"</span>}</div>
-            <div class="l">};</div>
+          <div class="panel" data-tab="cpp">
+            <div class="code">
+              <div class="l"><span class="k">using</span> System;</div>
+              <div class="l"></div>
+              <div class="l"><span class="k">class</span> Skills</div>
+              <div class="l">{</div>
+              <div class="l">    <span class="k">static void</span> Main()</div>
+              <div class="l">    {</div>
+              <div class="l">        <span class="k">string</span>[] coding = { <span class="s">"Python"</span>, <span class="s">"C++"</span>, <span class="s">"C#"</span> };</div>
+              <div class="l">        <span class="k">string</span>[] hardware = { <span class="s">"Raspberry Pi"</span>, <span class="s">"Microcontrollers"</span>, <span class="s">"Local AI"</span> };</div>
+              <div class="l">    }</div>
+              <div class="l">}</div>
+            </div>
           </div>
-        </div>
 
-        <div class="panel" data-tab="blend">
-          <div class="grid">
-            <figure class="media wide" data-src="images/gummy-bear.jpg" data-alt="My gummy bear character"></figure>
-            <figure class="media wide" data-src="videos/gummy-bear.mp4"></figure>
+          <div class="panel" data-tab="blend">
+            <div class="grid">
+              <p class="box square" data-i18n="blend_t"></p>
+              <figure class="media square" data-src="models/gummy-bear.glb" data-alt="3D model of my character"></figure>
+            </div>
           </div>
-          <p class="box grow" data-i18n="blend_t"></p>
-          <button class="egg" onclick="openModel()" aria-label="Show 3D model">3D</button>
-        </div>
 
-        <div class="panel" data-tab="af">
-          <div class="grid">
-            <figure class="media wide" data-src="images/drawing-1.png" data-alt="Drawing 1"></figure>
-            <figure class="media wide" data-src="images/drawing-2.png" data-alt="Drawing 2"></figure>
-          </div>
-          <p class="box grow" data-i18n="af_t"></p>
-        </div>
-
-        <div class="panel" data-tab="ppt">
-          <div class="grid">
-            <figure class="media wide" data-src="images/slide-1.png" data-alt="A slide from my presentations"></figure>
-            <p class="box" data-i18n="ppt_1"></p>
-          </div>
-          <div class="grid">
-            <p class="box" data-i18n="ppt_2"></p>
-            <figure class="media wide" data-src="images/slide-2.png" data-alt="A slide from my presentations"></figure>
-          </div>
-          <div class="grid">
-            <figure class="media wide" data-src="images/slide-3.png" data-alt="A slide from my presentations"></figure>
-            <p class="box" data-i18n="ppt_3"></p>
+          <div class="panel" data-tab="af">
+            <figure class="media wide" data-src="images/drawing-1.png" data-alt="My drawing"></figure>
           </div>
         </div>
       </div>
@@ -216,7 +184,7 @@
     <p>mtchkka, Claude</p>
   </footer>
 
-  <!-- Full-screen viewer for pictures and videos -->
+  <!-- Full-screen viewer for pictures -->
   <dialog id="viewer"><button aria-label="Close">×</button></dialog>
 
   <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
@@ -230,15 +198,9 @@
         about_p: "I study at an IT-focused secondary school, where I learn graphic design, coding, robotics and much more. I speak Czech, Russian and English. In my free time I build small projects and learn something new from each one.",
         files_h: "My skills",
         hint: "Click a file to open it.",
-        basics: "basics",
-        learning: "learning",
         stl_t: "BonBon from FNAF: SL, my first big project on a 3D printer.",
         hw_t: "Raspberry Pi project, HomeLab.",
         blend_t: "My gummy bear character, which I model, texture and animate in Blender.",
-        af_t: "Pictures I drew.",
-        ppt_1: "X",
-        ppt_2: "X",
-        ppt_3: "X",
         contact_h: "Contact",
         contact_p: "Write to me at"
       },
@@ -249,15 +211,9 @@
         about_p: "Studuji střední školu zaměřenou na IT, kde se učím grafický design, programování, robotiku a mnoho dalšího. Mluvím česky, rusky a anglicky. Ve volném čase dělám malé projekty a z každého se naučím něco nového.",
         files_h: "Moje dovednosti",
         hint: "Klikni na soubor, který chceš otevřít.",
-        basics: "základy",
-        learning: "učím se",
-        stl_t: "BonBon ze hry FNAF: SL, můj první větší projekt na šD tiskárně.",
-        hw_t: "Raspberry Pi projekt, HomeLab.",
+        stl_t: "BonBon ze hry FNAF: SL, můj první větší projekt na 3D tiskárně.",
+        hw_t: "Projekt s Raspberry Pi, HomeLab.",
         blend_t: "Moje postavička gumového medvídka, kterou modeluji, texturuji a animuji v Blenderu.",
-        af_t: "Obrázky, které jsem nakreslil.",
-        ppt_1: "X",
-        ppt_2: "X",
-        ppt_3: "X",
         contact_h: "Kontakt",
         contact_p: "Napište mi na"
       }
@@ -282,55 +238,34 @@
       localStorage.setItem("lang", lang);
     }
 
-    // Build the pictures and videos from data-src (a missing file just keeps its placeholder)
+    // Build the pictures and 3D models from data-src (a missing file just keeps its placeholder)
     document.querySelectorAll(".media").forEach(function (box) {
-      const src = box.dataset.src;
-      const file = document.createElement(src.endsWith(".mp4") ? "video" : "img");
-      file.onerror = function () { file.remove(); };
-      file.alt = box.dataset.alt || "";
-      file.muted = true;
-      file.preload = "metadata";
-      file.src = src.endsWith(".mp4") ? src + "#t=0.1" : src;   // #t=0.1 shows a first frame
+      const is3D = box.dataset.src.endsWith(".glb");
+      const file = document.createElement(is3D ? "model-viewer" : "img");
+      file.setAttribute("src", box.dataset.src);
+      file.setAttribute("alt", box.dataset.alt || "");
+      if (is3D) {
+        file.setAttribute("camera-controls", "");   // drag to turn the model, scroll to zoom
+        file.setAttribute("auto-rotate", "");
+      }
+      file.addEventListener("error", function () { file.remove(); });
       box.append(file);
     });
 
-    // Click a picture or video to open it full screen
+    // Click a picture to open it full screen (click anywhere or press Esc to close)
     const viewer = document.getElementById("viewer");
 
     document.addEventListener("click", function (event) {
-      const box = event.target.closest(".media");
-      const file = box && box.querySelector("img, video");
-      if (!file) return;
-      const big = document.createElement(file.tagName);
-      big.src = box.dataset.src;
-      if (big.tagName === "VIDEO") {
-        big.controls = true;
-        big.autoplay = true;
-      }
+      const picture = event.target.closest(".media img");
+      if (!picture) return;
+      const big = document.createElement("img");
+      big.src = picture.src;
       viewer.prepend(big);
       viewer.showModal();
     });
 
-    // Easter egg: the little green button opens the 3D model (export it from Blender as .glb)
-    function openModel() {
-      const file = "models/gummy-bear.glb";
-      const model = document.createElement("model-viewer");
-      model.setAttribute("src", file);
-      model.setAttribute("alt", "3D model of my gummy bear character");
-      model.setAttribute("camera-controls", "");   // drag to turn, scroll to zoom
-      model.setAttribute("auto-rotate", "");
-      model.addEventListener("error", function () { viewer.dataset.error = file; });
-      viewer.prepend(model);
-      viewer.showModal();
-    }
-
-    viewer.onclick = function (event) {   // click anywhere (except video controls and the 3D model) to close; Esc works too
-      if (event.target.tagName !== "VIDEO" && event.target.tagName !== "MODEL-VIEWER") viewer.close();
-    };
-    viewer.onclose = function () {
-      viewer.firstElementChild.remove();
-      viewer.removeAttribute("data-error");
-    };
+    viewer.onclick = function () { viewer.close(); };
+    viewer.onclose = function () { viewer.firstElementChild.remove(); };
 
     // Start in the saved language (English the first time)
     const saved = localStorage.getItem("lang");
